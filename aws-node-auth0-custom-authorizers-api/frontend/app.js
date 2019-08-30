@@ -1,11 +1,11 @@
 /* global window document localStorage fetch alert */
 
 // Fill in with your values
-const AUTH0_CLIENT_ID = 'your-auth0-client-id-here';
-const AUTH0_DOMAIN = 'your-auth0-domain-here.auth0.com';
+const AUTH0_CLIENT_ID = 'pNVEFMewJzKOtjhWvbnAyd3BUDeCE40g';
+const AUTH0_DOMAIN = 'dev-e574pjvf.auth0.com';
 const AUTH0_CALLBACK_URL = window.location.href; // eslint-disable-line
-const PUBLIC_ENDPOINT = 'https://your-aws-endpoint-here.amazonaws.com/dev/api/public';
-const PRIVATE_ENDPOINT = 'https://your-aws-endpoint-here.us-east-1.amazonaws.com/dev/api/private';
+const PUBLIC_ENDPOINT = 'https://rjwxkxiz2c.execute-api.us-west-2.amazonaws.com/dev/api/public';
+const PRIVATE_ENDPOINT = 'https://rjwxkxiz2c.execute-api.us-west-2.amazonaws.com/dev/api/private';
 
 // initialize auth0 lock
 const lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN, { // eslint-disable-line no-undef
@@ -88,20 +88,25 @@ document.getElementById('btn-public').addEventListener('click', () => {
 document.getElementById('btn-private').addEventListener('click', () => {
   // Call private API with JWT in header
   const token = localStorage.getItem('id_token');
-  /*
+/*
    // block request from happening if no JWT token present
-   if (!token) {
+  if (!token) {
     document.getElementById('message').textContent = ''
     document.getElementById('message').textContent =
-     'You must login to call this protected endpoint!'
+    'You must login to call this protected endpoint!'
     return false
-  }*/
+  }
+  */
+
+  console.log("token: ", token);
+
   // Do request to private endpoint
   fetch(PRIVATE_ENDPOINT, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: new Headers({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }),
   })
     .then(response => response.json())
     .then((data) => {
@@ -112,4 +117,19 @@ document.getElementById('btn-private').addEventListener('click', () => {
     .catch((e) => {
       console.log('error', e);
     });
+
+  // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+  // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+  // axios.post(PRIVATE_ENDPOINT)
+  // .then(response => response.json())
+  // .then((data) => {
+  //   console.log('Token:', data);
+  //   document.getElementById('message').textContent = '';
+  //   document.getElementById('message').textContent = data.message;
+  // })
+  // .catch((e) => {
+  //   console.log('error', e);
+  // });
+
 });
